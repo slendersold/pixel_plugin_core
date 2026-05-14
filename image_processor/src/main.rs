@@ -9,7 +9,10 @@ use image_processor::error::ProcessorError;
 use image_processor::plugin_loader::{call_process_image, params_cstring};
 
 #[derive(Parser, Debug)]
-#[command(name = "image_processor", about = "Обработка PNG через динамические плагины")]
+#[command(
+    name = "image_processor",
+    about = "Обработка PNG через динамические плагины"
+)]
 struct Args {
     /// Путь к исходному PNG
     input: PathBuf,

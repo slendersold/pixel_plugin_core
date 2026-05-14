@@ -49,10 +49,8 @@ pub fn call_process_image(
     let lib = unsafe { Library::new(&path) }.map_err(|e| {
         ProcessorError::Plugin(format!("не удалось загрузить {}: {e}", path.display()))
     })?;
-    let process_image: Symbol<ProcessImageFn> =
-        unsafe { lib.get(b"process_image\0") }.map_err(|e| {
-            ProcessorError::Plugin(format!("символ process_image не найден: {e}"))
-        })?;
+    let process_image: Symbol<ProcessImageFn> = unsafe { lib.get(b"process_image\0") }
+        .map_err(|e| ProcessorError::Plugin(format!("символ process_image не найден: {e}")))?;
     unsafe {
         process_image(width, height, rgba_data, params);
     }
@@ -61,7 +59,6 @@ pub fn call_process_image(
 
 /// Строка параметров для FFI: `CString` живёт до вызова плагина.
 pub fn params_cstring(params: &str) -> Result<CString, ProcessorError> {
-    CString::new(params.as_bytes()).map_err(|_| {
-        ProcessorError::Args("в параметрах встречен внутренний нулевой байт".into())
-    })
+    CString::new(params.as_bytes())
+        .map_err(|_| ProcessorError::Args("в параметрах встречен внутренний нулевой байт".into()))
 }
