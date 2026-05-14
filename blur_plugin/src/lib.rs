@@ -51,12 +51,11 @@ fn blur_once(width: u32, height: u32, radius: u32, src: &[u8], dst: &mut [u8]) {
                 }
             }
             let out_i = (y as usize * width as usize + x as usize) * 4;
-            if count > 0 {
-                for c in 0..4 {
-                    dst[out_i + c] = ((acc[c] + count / 2) / count) as u8;
-                }
-            } else {
-                dst[out_i..out_i + 4].copy_from_slice(&src[out_i..out_i + 4]);
+            for c in 0..4 {
+                dst[out_i + c] = match (acc[c] + count / 2).checked_div(count) {
+                    Some(v) => v as u8,
+                    None => src[out_i + c],
+                };
             }
         }
     }
