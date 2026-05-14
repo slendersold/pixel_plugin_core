@@ -1,5 +1,5 @@
-# Не-main ветки: только плагин mirror_plugin (cdylib).
-name: CI branch · mirror_plugin
+# Не-main ветки: плагин зеркала на C (`mirror_c`).
+name: CI branch · mirror_c (C plugin)
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
       - main
       - master
     paths:
-      - "mirror_plugin/**"
+      - "mirror_c/**"
       - ".github/workflows/ci-branch-mirror-plugin.yml"
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  mirror_plugin:
+  mirror_c:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -23,14 +23,17 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      - name: Install gcc
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+
+      - name: Build mirror_c
+        run: gcc -shared -fPIC -O2 -Wall -Wextra -o target/debug/libmirror_c.so mirror_c/mirror.c
+
       - name: Format (workspace)
         run: cargo fmt --all -- --check
 
-      - name: Clippy
-        run: cargo clippy -p mirror_plugin --all-targets --no-deps -- -D warnings
+      - name: Clippy (workspace)
+        run: cargo clippy --workspace --all-targets --no-deps -- -D warnings
 
-      - name: Build
-        run: cargo build -p mirror_plugin
-
-      - name: Tests
-        run: cargo test -p mirror_plugin
+      - name: Check (workspace)
+        run: cargo check --workspace

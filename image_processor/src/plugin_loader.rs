@@ -1,4 +1,6 @@
 //! Динамическая загрузка библиотеки плагина и символа `process_image` через `libloading`.
+//!
+//! Вызывающий обязан соблюдать [`crate::contract`] по длине `rgba_data` и времени жизни `params`.
 
 use std::ffi::CString;
 use std::os::raw::c_char;
