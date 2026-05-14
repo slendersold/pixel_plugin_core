@@ -60,11 +60,7 @@ mod linux {
         );
 
         let script = root.join("scripts").join("build-plugins.sh");
-        assert!(
-            script.is_file(),
-            "ожидается {}",
-            script.display()
-        );
+        assert!(script.is_file(), "ожидается {}", script.display());
 
         let st = Command::new("bash")
             .arg(&script)
