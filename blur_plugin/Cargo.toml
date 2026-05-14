@@ -1,0 +1,9 @@
+[package]
+name = "blur_plugin"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Плагин размытия (cdylib, FFI process_image)."
+
+[lib]
+crate-type = ["cdylib"]

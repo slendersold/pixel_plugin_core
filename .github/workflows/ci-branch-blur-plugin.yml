@@ -1,0 +1,36 @@
+# Не-main ветки: только плагин blur_plugin (cdylib).
+name: CI branch · blur_plugin
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+    paths:
+      - "blur_plugin/**"
+      - ".github/workflows/ci-branch-blur-plugin.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  blur_plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Format (workspace)
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy -p blur_plugin --all-targets --no-deps -- -D warnings
+
+      - name: Build
+        run: cargo build -p blur_plugin
+
+      - name: Tests
+        run: cargo test -p blur_plugin

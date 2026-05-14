@@ -1,0 +1,36 @@
+# Не-main ветки: только пакет image_processor.
+name: CI branch · image_processor
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+    paths:
+      - "image_processor/**"
+      - ".github/workflows/ci-branch-image-processor.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  image_processor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Format (workspace)
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy -p image_processor --all-targets --no-deps -- -D warnings
+
+      - name: Build
+        run: cargo build -p image_processor
+
+      - name: Tests
+        run: cargo test -p image_processor
